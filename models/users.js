@@ -18,13 +18,14 @@ phone:{
     type:String,
     required:true
 },
-pincode:{
-    type:String
-    
-},
 address:{
 type:String,
 required:true
+},
+role:
+{
+    type:String,
+    default:0
 }
 },{timestamps:true})
 module.exports= mongoose.model('users',userSchema)
