@@ -4,7 +4,7 @@ import Layout from "./../components/Layouts/Layout"
 const Homepage = () => {
   return (
     <Layout>
-  <h1> Homepage</h1> 
+  <img src="C:\Users\asus\Desktop\ecommercenew\client\src\assets\dennis-siqueira-QnMeRW36-zY-unsplash.jpg"/>
     </Layout>
   )
 }
