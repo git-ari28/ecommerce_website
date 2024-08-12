@@ -1,0 +1,76 @@
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Full viewport height */
+}
+
+.registration {
+    flex: 1; /* Allow form container to grow and fill available space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff; /* White background for the form card */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px; /* Margin to ensure spacing from edges */
+    max-width: 500px; /* Maximum width for the form card */
+    margin: auto; /* Center the form card horizontally */
+    margin-top:100px;
+}
+
+/* Style for form groups */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Style for input fields */
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+}
+
+/* Input focus state */
+.form-group input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Style for the submit button */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Button hover state */
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Button focus state */
+.btn-primary:focus {
+    outline: none;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .registration {
+        padding: 15px;
+        margin: 10px; /* Adjust margin on smaller screens */
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 12px;
+    }
+}
