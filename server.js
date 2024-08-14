@@ -1,20 +1,30 @@
-const express =require("express")
-const app=express();
-const mongoose=require("mongoose")
-const auth=require("./routes/auth.js")
-mongoose.connect('mongodb://127.0.0.1:27017/ecommerce');
-const cors=require("cors");
+const express = require("express");
+const app = express();
+const mongoose = require("mongoose");
+const cors = require("cors");
+
+// Importing routes
+const authRoutes = require("./routes/auth.js");  // Ensure the correct import
 
 require('dotenv').config();
 
-app.use(cors())
+mongoose.connect('mongodb://127.0.0.1:27017/ecommerce')
+
+
+app.use(cors());
 app.use(express.json());
-app.use('/auth',auth)
 
-app.get('/',(req,res)=>{
-    res.send("welcome to my ecommerce app")
-})
+// Use routes
+app.use('/auth', authRoutes);  // Correctly using the auth.js routes
 
-app.listen(8080,()=>{
-    console.log("server running on port 8080");
-})
+app.get('/', (req, res) => {
+    res.send("Welcome to my ecommerce app");
+});
+
+app.listen(8080, () => {
+    console.log("Server running on port 8080");
+});
+
+
+
+
