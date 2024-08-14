@@ -3,11 +3,11 @@ import Layout from "./../components/Layouts/Layout"
 
 const Policy = () => {
   return (
-    <Layout>
-        
+    
+        <Layout>
         Policy
-
-    </Layout>
+        </Layout>
+   
     
   )
 }

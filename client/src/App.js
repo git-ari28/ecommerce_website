@@ -1,39 +1,32 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Layout from "./components/Layouts/Layout";
-import Homepage from "./pages/Homepage";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Policy from "./pages/Policy";
-import Pagenotfound from "./pages/Pagenotfound";
-import Register from "./pages/Auth/Register";
-import Login from "./pages/Auth/Login";
-import RecommendationsPage from "./pages/RecommendationsPage";  // Import your RecommendationsPage component
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import SearchBar from "./components/SearchBar" // Import the SearchBar component
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Homepage from './pages/Homepage';
+import Register from './pages/Auth/Register';
+import Login from './pages/Auth/Login';
+import Category from './pages/Category';
+import Cart from './pages/Cart';
+import Pagenotfound from './pages/Pagenotfound';
+import { AuthProvider } from './context/auth';
 
 function App() {
   return (
-    <>
-      <Layout>
-        <SearchBar /> {/* Add SearchBar here */}
+    <AuthProvider>
+      
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/policy" element={<Policy />} />
-          <Route path="/search" element={<RecommendationsPage />} /> {/* Update this route */}
+          <Route path="/category" element={<Category />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="*" element={<Pagenotfound />} />
         </Routes>
-      </Layout>
-      <ToastContainer />
-    </>
+      
+    </AuthProvider>
   );
 }
 
 export default App;
+
+
 
 
