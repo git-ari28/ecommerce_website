@@ -11,7 +11,7 @@ import Login from "./pages/Auth/Login";
 import RecommendationsPage from "./pages/RecommendationsPage";  // Import your RecommendationsPage component
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import SearchBar from "./pages/SearchBar.js" // Import the SearchBar component
+import SearchBar from "./components/SearchBar" // Import the SearchBar component
 
 function App() {
   return (
