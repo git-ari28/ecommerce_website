@@ -4,21 +4,23 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from './context/auth'; // Correctly import AuthProvider
+import { AuthProvider } from './context/auth';
+import { CartProvider } from './context/CartContext'; // Import CartProvider
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
-  
-    <AuthProvider>
+  <AuthProvider>
+    <CartProvider>
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </AuthProvider>
-  
+    </CartProvider>
+  </AuthProvider>
 );
 
 reportWebVitals();
+
 
  
 

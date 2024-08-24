@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <div className='bg-dark test-light p-3'>
-      <h6 className='text-center text-light'>All rights reserved &copy;Walmart</h6>
+      <h6 className='text-center text-light'>All rights reserved &copy;UrbanCrate</h6>
       <div className="text-center mt-3">
         <ul className="list-unstyled">
           <li className="d-inline mx-2">

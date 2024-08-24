@@ -1,64 +1,70 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Layout from './../components/Layouts/Layout';
+import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useCart } from '../context/CartContext';
+import './Cart.css'; // Import CSS for styling
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([]);
+  const { cart, removeFromCart, clearCart } = useCart();
+  const navigate = useNavigate(); // Initialize useNavigate
 
-  const fetchCartItems = async () => {
-    try {
-      const response = await axios.get('/api/cart');
-      setCartItems(response.data);
-    } catch (error) {
-      console.error('Error fetching cart items:', error);
-    }
+  // Calculate the total cost
+  const totalCost = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+
+  // Handle checkout and navigate to login page
+  const handleCheckout = () => {
+    // Add your checkout logic here (e.g., saving order, clearing cart)
+    
+    // Navigate to the login page
+    navigate('/login');
   };
-
-  const addToCart = async (product) => {
-    try {
-      await axios.post('/api/cart/add', { product });
-      fetchCartItems(); // Refresh cart items
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-    }
-  };
-
-  const removeFromCart = async (productId) => {
-    try {
-      await axios.delete(`/api/cart/remove/${productId}`);
-      fetchCartItems(); // Refresh cart items
-    } catch (error) {
-      console.error('Error removing from cart:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchCartItems(); // Fetch cart items on component mount
-  }, []);
 
   return (
-    <Layout>
-      <h1>Cart</h1>
-      {cartItems.length > 0 ? (
-        <ul>
-          {cartItems.map((item) => (
-            <li key={item.product_id}>
-              <h4>{item.name}</h4>
-              <button onClick={() => removeFromCart(item.product_id)}>Remove from Cart</button>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Your cart is currently empty.</p>
-      )}
-      {/* Example button to add a product to the cart */}
-      <button onClick={() => addToCart({ product_id: '123', name: 'Sample Product' })}>
-        Add Sample Product to Cart
-      </button>
-    </Layout>
+    <div className='cart-container'>
+      <div className='cart-items'>
+        <h2>Cart</h2>
+        {cart.length === 0 ? (
+          <p>No items in the cart.</p>
+        ) : (
+          <>
+            <ul className='list-group'>
+              {cart.map((item) => (
+                <li key={item._id} className='list-group-item d-flex justify-content-between align-items-center'>
+                  <div>
+                    <strong>{item.name}</strong> - Quantity: {item.quantity} - Price: ${item.price * item.quantity}
+                  </div>
+                  <button
+                    className='btn btn-danger'
+                    onClick={() => removeFromCart(item._id)}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button
+              className='btn btn-secondary mt-3'
+              onClick={clearCart}
+            >
+              Clear Cart
+            </button>
+          </>
+        )}
+      </div>
+      <div className='cart-sidebar'>
+        <h3>Total: ${totalCost.toFixed(2)}</h3>
+        <button className='btn btn-primary' onClick={handleCheckout}>
+          Checkout
+        </button>
+      </div>
+    </div>
   );
 };
 
 export default Cart;
+
+
+
+
+
 
 

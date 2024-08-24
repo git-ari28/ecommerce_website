@@ -1,113 +1,163 @@
-const Product = require('../models/products');
-const mongoose = require('mongoose');
+const Product = require("../models/product");
+const Category = require("../models/category");
 
-// GET all products
-const getAllProducts = async (req, res) => {
+// Create multiple products
+exports.createProductController = async (req, res) => {
     try {
-        const products = await Product.find();
-        res.json(products);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-};
+        const products = req.body;
 
-// POST a new product
-const createProduct = async (req, res) => {
-    try {
-        if (Array.isArray(req.body)) {
-            const newProducts = await Product.insertMany(req.body);
-            res.status(201).json(newProducts);
-        } else {
-            const product = new Product({
-                name: req.body.name,
-                description: req.body.description,
-                price: req.body.price,
-                category: req.body.category,
-                imageUrl: req.body.imageUrl,
-                quantity: req.body.quantity
-            });
-
-            const newProduct = await product.save();
-            res.status(201).json(newProduct);
+        if (!Array.isArray(products) || products.length === 0) {
+            return res.status(400).json({ message: "Products array is required and cannot be empty" });
         }
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-};
 
-// GET a product by ID
-const getProductById = async (req, res) => {
-    const productId = req.params.productId;
+        for (const product of products) {
+            const { product_id, name, category, tags, imageUrl, price, shipping, quantity } = product;
 
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
-        return res.status(400).json({ message: 'Invalid productId' });
-    }
+            if (!product_id || !name || !category || !tags || !imageUrl || price === undefined || shipping === undefined || quantity === undefined) {
+                return res.status(400).json({ message: "All fields are required for each product" });
+            }
 
-    try {
-        const product = await Product.findById(productId);
-        if (!product) {
-            return res.status(404).json({ message: 'Product not found' });
+            const existingProduct = await Product.findOne({ product_id });
+            if (existingProduct) {
+                return res.status(400).json({ message: `Product with product_id ${product_id} already exists` });
+            }
+
+            // Validate category (if necessary)
+            const categoryExists = await Category.findOne({ name: category });
+            if (!categoryExists) {
+                return res.status(400).json({ message: `Category ${category} does not exist` });
+            }
         }
-        res.json(product);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-};
 
-// DELETE a product
-const deleteProduct = async (req, res) => {
-    try {
-        const productId = req.params.id;
-        const deletedProduct = await Product.findByIdAndDelete(productId);
-        if (!deletedProduct) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
-        res.status(200).json({ message: 'Product deleted successfully' });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-};
-
-// POST search products
-const searchProducts = async (req, res) => {
-    const { searchQuery } = req.body;
-
-    try {
-        const products = await Product.find({
-            $or: [
-                { name: { $regex: searchQuery, $options: 'i' } },
-                { description: { $regex: searchQuery, $options: 'i' } }
-            ]
+        const savedProducts = await Product.insertMany(products);
+        res.status(201).json({
+            success: true,
+            message: "Products created successfully",
+            products: savedProducts,
         });
-
-        res.json(products);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+    } catch (error) {
+        console.error("Error creating products:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error creating products",
+            error: error.message,
+        });
     }
 };
 
-// Middleware function to get a product by ID
-const getProduct = async (req, res, next) => {
-    let product;
+// Update a product
+exports.updateProductController = async (req, res) => {
     try {
-        product = await Product.findById(req.params.id);
-        if (product == null) {
-            return res.status(404).json({ message: 'Cannot find product' });
+        const { id } = req.params;
+        const { product_id, name, category, tags, imageUrl, price, shipping, quantity } = req.body;
+
+        if (!product_id || !name || !category || !tags || !imageUrl || price === undefined || shipping === undefined || quantity === undefined) {
+            return res.status(400).json({ message: "All fields are required" });
         }
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
+
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        // Validate category (if necessary)
+        const categoryExists = await Category.findOne({ name: category });
+        if (!categoryExists) {
+            return res.status(400).json({ message: `Category ${category} does not exist` });
+        }
+
+        product.product_id = product_id;
+        product.name = name;
+        product.category = category;
+        product.tags = tags;
+        product.imageUrl = imageUrl;
+        product.price = price;
+        product.shipping = shipping;
+        product.quantity = quantity;
+
+        await product.save();
+        res.status(200).json({
+            success: true,
+            message: "Product updated successfully",
+            product,
+        });
+    } catch (error) {
+        console.error("Error updating product:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error updating product",
+            error: error.message,
+        });
     }
-
-    res.product = product;
-    next();
 };
 
-module.exports = {
-    getAllProducts,
-    createProduct,
-    getProductById,
-    deleteProduct,
-    searchProducts,
-    getProduct
+// Get all products
+exports.getProductsController = async (req, res) => {
+    try {
+        const products = await Product.find({});
+        res.status(200).json({
+            success: true,
+            products,
+        });
+    } catch (error) {
+        console.error("Error fetching products:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching products",
+            error: error.message,
+        });
+    }
 };
+
+// Get a single product
+exports.getProductController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        res.status(200).json({
+            success: true,
+            product,
+        });
+    } catch (error) {
+        console.error("Error fetching product:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching product",
+            error: error.message,
+        });
+    }
+};
+
+// Delete a product
+exports.deleteProductController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await Product.findByIdAndDelete(id);
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Product deleted successfully",
+            product,
+        });
+    } catch (error) {
+        console.error("Error deleting product:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error deleting product",
+            error: error.message,
+        });
+    }
+};
+// Get products by category
+
+
+
+
 

@@ -11,12 +11,13 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [address, setAddress] = useState('');
     const [phone, setPhone] = useState('');
+    const[answer,setAnswer]=useState("");
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:8080/auth/register', { name, email, password, phone, address });
+            const res = await axios.post('http://localhost:8080/api/auth/register', { name, email, password, phone, address,answer});
             if (res && res.data.success) {
                 toast.success(res.data && res.data.message);
                 navigate('/login');
@@ -50,7 +51,10 @@ const Register = () => {
                         <div className="form-group">
                             <input type="text" className="form-control" id="phone" placeholder="Enter phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
                         </div>
-                        <button type="submit" className="btn btn-primary">Submit</button>
+                        <div className="form-group">
+                            <input type="text" className="form-control" id="answer" placeholder="What is your favourite sports" value={answer} onChange={(e) => setAnswer(e.target.value)} />
+                        </div>
+                        <button type="submit" className="btn btn-primary">Register</button>
                     </form>
                 </div>
             </Layout>

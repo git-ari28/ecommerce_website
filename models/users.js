@@ -22,6 +22,10 @@ address:{
 type:String,
 required:true
 },
+answer:{
+    type:String,
+    
+},
 role:
 {
     type:String,
